@@ -1,65 +1,72 @@
-import {
-  StyleSheet,
-  View,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { useCallback } from 'react';
-import { useFonts } from 'expo-font';
+import React, { useState} from "react";
+import { StyleSheet,SafeAreaView } from "react-native";
 import * as SplashScreen from 'expo-splash-screen';
+import { useFonts } from 'expo-font';
 
-SplashScreen.preventAutoHideAsync();
+import {Isologo} from "./src/components"
+import Navigators from "./src/navigators/Navigators";
 
-import Presentacion from './src/screens/Presentacion';
-import Header from './src/components/Header';
-import MainNavigator from './src/navigators/MainNavigator';
-
-
+SplashScreen.preventAutoHideAsync()
 
 export default function App() {
-  const [presentacion, setPresentacion] = useState (true);
 
-  useEffect(()=> {
-    setTimeout( () => {
-      setPresentacion(false);
-    }, 5000);
-  }, []);
-
-  
-  const [fontsLoaded] = useFonts ({
+  const [loading, setLoading] = useState(true);
+  const [fontsLoaded] = useFonts({
     'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
     'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf'),
   });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
+  const onLayoutRootView = React.useCallback(async () => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    await SplashScreen.hideAsync();
   }, [fontsLoaded]);
 
+  const [Task, setTask] = useState("");
+
+  const onChangeTask = (text) => {
+    setTask(text);
+  };
+
+  const addTask = () => {
+    setItems((oldArray) => [...oldArray, { id: Date.now(), name: Task, state: false }]);
+    setTask("");
+    setAddModal(!addModal);
+  };
+
+  const closeAddTask = () => {
+    setAddModal(!addModal);
+    setTask("");
+  }
+
+  const openTask = (item) => {
+    setSelectedItem(item);
+    setModalVisible(true);
+  };
 
   if (!fontsLoaded) {
     return null;
-  }
+  };
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    <SafeAreaView style={styles.screen} onLayout={onLayoutRootView}>
+      {loading ? (<Isologo />) : (
+        <>          
+          <Navigators/>
+        </>
+      )}
+    </SafeAreaView>
+  )
+};
 
-    <View style={styles.screen} onLayout={onLayoutRootView}>
-     {presentacion && <Presentacion/>}
-
-     {!presentacion && <Header/>}
-     {!presentacion && <MainNavigator/>}    
-
-    </View>
-
-    </TouchableWithoutFeedback>
-  );
-}
 
 const styles = StyleSheet.create({
   screen: {
+    fontFamily: "open-sans",
+    paddingTop: 35,
+    padding: 3,
     flex: 1,
+    backgroundColor: "#fff"
   },
 });

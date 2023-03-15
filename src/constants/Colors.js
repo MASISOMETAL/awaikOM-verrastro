@@ -1,9 +1,7 @@
 export default {
-    primary: '#43BC98',
-    primaryLight: '#B3E8D7',
-    alerta: '#FF335A',
-    text:'#595959',
-    grey:'#A5A5A5',
-    shadow: '#232323',
-    greyLight:'#CCCCCC'
+    celeste: '#25d1fe',
+    verde: '#3BEB60',
+    rojo: '#EA1E10',
+    fondoverde: '#D0ECD0',
+    fondonaranja: '#FFEDCC'
 }
